@@ -8,10 +8,15 @@ import { Dwarf } from "../Card/Dwarf";
 import { Picker } from "../Action/Picker";
 import { Scout } from "../Action/Scout";
 
+import { Enemy } from "../Card/Enemy";
+import { Bonus } from "../Card/Bonus";
+import { Treasure } from "../Card/Treasure";
+
 import { debugValue } from "../Launcher";
 import { debugExtremeValue } from "../Launcher";
 
 import { prompt } from "../Module/Question";
+
 
 export class Game {
     public gameboard : GameBoard;
@@ -33,13 +38,21 @@ export class Game {
     }
 
     public playGame() : void {
-        this.doRound();
+        this.doRound();     // Boucle de jeu
+        let scores =  this.computeScore();
+        this.endGame(scores);
+
+        if (debugExtremeValue) { this.gameboard.showAllCards(); }
+        if (debugValue) { this.gameboard.comptAllCards(); }
     }
     
     private async doRound() {
         // Rajouter la condition d'arrêt de la partie
         if (debugExtremeValue) { this.gameboard.showAllCards(); }
         if (debugValue) { this.gameboard.comptAllCards(); }
+
+        // Test d'arrêt
+        if (this.almost2MinesEmpty()) { console.log(`\nThe game has ended!! Let's count the points!!\n`); return; }
 
         console.debug(`\n=====================================\n| Turn ${this.turn}: Player ${this.selectedPlayer}, it's your turn! |\n=====================================`);
 
@@ -91,6 +104,7 @@ export class Game {
         let noCard = await prompt(`Which Card do you want to pick (1 to ${this.gameboard.recruitCenter.lenghtMaxFive()})? `);
         if (noCard > 0 && noCard <= this.gameboard.recruitCenter.lenghtMaxFive()) {
             console.log(`You choose the ${this.gameboard.recruitCenter.collection[noCard-1].name}!\n`)
+            // Ajouter une demande de bonus
             this.gameboard.recruitCenter.moveCardToStack(this.gameboard.recruitCenter.collection[noCard-1], player.playerHand );
         } 
         else {
@@ -173,5 +187,63 @@ export class Game {
                 this.gameboard.unUsedCards.addCard(card);
                 this.gameboard.players[this.selectedPlayer-1].mines[noMine].removeCard(card);
         }
+    }
+
+    private almost2MinesEmpty(): boolean {
+        let b1:boolean = this.gameboard.mines[0].collection.length == 0;
+        let b2:boolean = this.gameboard.mines[1].collection.length == 0;
+        let b3:boolean = this.gameboard.mines[2].collection.length == 0;
+        //return ((b1 && b2) || (b2 && b3) || (b1 && b3));
+        return b1 ? (b2 || b3) : (b2 && b3);
+    }
+
+    private computeScore(): Map<number, number> {
+        let score = new Map;
+        let maxDirt:number, maxRat:number = 0;
+        let ownerDirt:number, ownerRat:number = null;
+
+        for (let i=0; i<4; i++) {
+            let s:number, dirt:number, rat:number = 0;
+            for (let card of this.gameboard.players[i].treasure.collection) {
+                if (card instanceof Enemy || card instanceof Treasure) {
+                    s += card.gold_value;
+                }
+                if (card.name == 'Dirt') { dirt++; }
+                else if (card.name == 'Rat') { rat++; }
+            }
+            if (maxDirt < dirt) { maxDirt = dirt; ownerDirt = i; }
+            if (maxRat < rat) { maxRat = rat; ownerRat = i; }
+
+            for (let card of this.gameboard.players[i].playerHand.collection) {
+                if (card.name == 'Unique_rings') { s += (card as Treasure).gold_value; }    // Rajouter les execptions
+            }
+            score.set(i, s);
+        }
+        // Mon Dieu que c'est horrible :(
+        // On verra plus tard pour l'extensibilitée
+        if (this.gameboard.trophy[0].name == 'Employee_of_the_month') { 
+            this.gameboard.players[ownerDirt].trophy.push(this.gameboard.trophy[0]); 
+            this.gameboard.players[ownerRat].trophy.push(this.gameboard.trophy[1]); }
+        else { 
+            this.gameboard.players[ownerDirt].trophy.push(this.gameboard.trophy[1]);
+            this.gameboard.players[ownerRat].trophy.push(this.gameboard.trophy[0]);
+        }
+
+        for (let i=0; i<4; i++) {
+            for (let card of this.gameboard.players[i].trophy) {
+                let n = score.get(i);
+                n += (card as Treasure).gold_value;
+                score.set(i, n);
+            }
+        }
+        return new Map([...score.entries()].sort((a, b) => b[1] - a[1]));
+    }
+
+    private endGame(scores:Map<number, number>): void {
+        console.log('\n\nThis is the ranking of the game:');
+        for (let [key, value] of scores) {
+            console.log(`(1) - Player ${key} with a score of ${value}!`);
+        }
+        console.log('\n\nThanks for playing and see ya!!');
     }
 }

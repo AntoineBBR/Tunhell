@@ -107,8 +107,7 @@ export class Picker {
         let cardType = card.typeName;
         let cardName = card.name;
 
-        if (debugValue) { console.log(`[DEBUG] cardType ${cardType}`); }
-        if (debugValue) { console.log(`[DEBUG] cardName ${cardName}`); }
+        if (debugValue) { console.log(`[DEBUG] cardType ${cardType}`); console.log(`[DEBUG] cardName ${cardName}`); }
 
 
         if (card instanceof Bonus || card instanceof Dwarf) {
@@ -139,8 +138,7 @@ export class Picker {
                     let playerCombatValue = this.combatValue(player, nMine, gameboard);
                     let monsterCombatValue = (card as Enemy).fight_value;
         
-                    if (debugValue) { console.log(`[DEBUG] Player combat value ${playerCombatValue}`); }
-                    if (debugValue) { console.log(`[DEBUG] Monster combat value ${monsterCombatValue}`); }
+                    if (debugValue) { console.log(`[DEBUG] Player combat value ${playerCombatValue}`); console.log(`[DEBUG] Monster combat value ${monsterCombatValue}`); }
         
                     if (playerCombatValue >= monsterCombatValue) {   
                         console.log(`The card ${cardName} from mine n°${nMine+1} has been defeat and added to the "Tresasure collection" of player ${player+1}`);
@@ -251,7 +249,8 @@ export class Picker {
                             console.log(`The ${arr[r].name} has been removed from the hand of player ${p+1}!`);
                             gameboard.players[p].playerHand.removeCard(arr[r]);
                             gameboard.recruitCenter.addCard(arr[r]);
-                            gameboard.players[player].playerHand.addCard(card);
+                            console.log(`The ${card.name} has been added to the Discard.`);
+                            gameboard.recruitCenter.addCard(card);
                             break;
                         }
                         else {
