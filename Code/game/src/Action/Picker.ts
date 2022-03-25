@@ -179,7 +179,7 @@ export class Picker {
                     else {
                         let array = [];
                         for (let cardPicked of gameboard.players[player].playerHand.collection) {
-                            if (cardPicked.name != 'Unique_rings') {    // Rajouter des cartes interdites
+                            if (cardPicked.name != 'Unique_rings') {    // Rajouter les cartes interdites
                                 if (debugValue) { console.log(`[DEBUG] ajout de la carte ${cardPicked.name} au tableau temporaire`) }
                                 array.push(cardPicked);
                             }
@@ -234,9 +234,36 @@ export class Picker {
                         this.isShut = true;
                     }
                     break; 
-                /*case 'Grödur_ghost':
-                    // Je refuse d'implémenter cette merde
-                    break;*/
+                case 'Grödur_ghost':
+                    let arr = [];
+                    let p:number = 0;
+                    let cpt:number = 0;
+                    for (let i=1; i<=4; i++) { 
+                        p = (player + i)%4;
+                        for (let cardP of gameboard.players[player].playerHand.collection) {
+                            if (cardP instanceof Dwarf) {
+                                if (debugValue) { console.log(`[DEBUG] ajout de la carte ${cardP.name} au tableau temporaire`) }
+                                arr.push(cardP);
+                            }
+                        }
+                        if (arr.length > 0) {
+                            let r = Math.floor(Math.random() * arr.length);
+                            console.log(`The ${arr[r].name} has been removed from the hand of player ${p+1}!`);
+                            gameboard.players[p].playerHand.removeCard(arr[r]);
+                            gameboard.recruitCenter.addCard(arr[r]);
+                            gameboard.players[player].playerHand.addCard(card);
+                            break;
+                        }
+                        else {
+                            console.log(`Player ${p+1} haven't any Dwarf in his hand.`);
+                            cpt++;
+                        }
+                        if (cpt == 4) {
+                            console.log(`None of the 4 players have a Dwarf in their hands! What a game!\nThe ${card.name} has been added to the Discard.`);
+                            gameboard.recruitCenter.addCard(card);
+                        }
+                    }
+                    break;
                 default:
                     this.dispNotImplemented(cardName, cardType, gameboard, card);
             }
