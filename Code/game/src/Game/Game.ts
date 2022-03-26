@@ -69,7 +69,7 @@ export class Game {
                 await this.playCard();
                 break;
             default:
-                this.doRound();
+                await this.doRound();
                 return;
         }
 
@@ -91,7 +91,7 @@ export class Game {
             this.turn++;
         }
         await prompt('\nPress a key a end your turn ');
-        this.doRound();
+        await this.doRound();
     }
 
     private async recruitCard() {
