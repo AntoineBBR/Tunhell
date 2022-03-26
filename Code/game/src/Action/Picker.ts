@@ -135,6 +135,7 @@ export class Picker {
                     gameboard.players[player].treasure.addCard(card);
                     break;
                 case 'Meetings':
+                case 'End_Mine':
                     let playerCombatValue = this.combatValue(player, nMine, gameboard);
                     let monsterCombatValue = (card as Enemy).fight_value;
         
@@ -150,7 +151,7 @@ export class Picker {
                         gameboard.mines[nMine].addCardToBegin(card);
                         return false;
                     }
-                    break;         
+                    break;      
                 default:
                     this.dispNotImplemented(cardName, cardType, gameboard, card);
             }
@@ -263,6 +264,19 @@ export class Picker {
                         }
                     }
                     break;
+                case 'Throne_room':
+                    console.log('The curse has struck, all your cards went away!!');
+                    for (let cardPicked of gameboard.players[player].playerHand.collection) {
+                        console.log(`Your ${cardPicked.name} has been added to the discard!`);
+                        gameboard.recruitCenter.addCard(cardPicked);
+                        gameboard.players[player].playerHand.removeCard(cardPicked);
+                    }
+                    console.log(`But, you won the ${cardName}?!`);
+                    gameboard.players[player].playerHand.addCard(card);
+                    break;
+                /*case 'Behind_door':
+                    // Comme une envie de mourir car il faut rajouter des conditions de partout ..
+                    break;*/
                 default:
                     this.dispNotImplemented(cardName, cardType, gameboard, card);
             }

@@ -55,7 +55,7 @@ export class Game {
         // Test d'arrêt
         if (this.almost2MinesEmpty()) { console.log(`\nThe game has ended!! Let's count the points!!\n`); return; }
 
-        console.debug(`\n=====================================\n| Turn ${this.turn}: Player ${this.selectedPlayer}, it's your turn! |\n=====================================`);
+        console.debug(`\n======================================\n| Round ${this.turn}: Player ${this.selectedPlayer}, it's your turn! |\n======================================`);
 
         // Rajouter une question pour savoir ce que le joueur veut voir (main, plateau etc..)
         this.gameboard.players[this.selectedPlayer-1].showHand();
