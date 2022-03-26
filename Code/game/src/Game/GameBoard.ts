@@ -101,7 +101,7 @@ export class GameBoard {
             console.debug(`==== Treasure player ${i+1} ====`);
             console.log(this.players[i].treasure.toString());
             console.debug(`==== Trophy player ${i+1} ====`);
-            console.log(this.players[i].trophy.toString());
+            console.log(this.players[i].playerTrophy.toString());
         }
     }
 
@@ -153,7 +153,7 @@ export class GameBoard {
 
         let nbCardTrophy = this.trophy.length;
         for (let i=0; i < this.nbPlayers; i++) {
-            nbCardTrophy += this.players[i].trophy.length;
+            nbCardTrophy += this.players[i].playerTrophy.collection.length;
         }
         console.debug('Trophy ' + nbCardTrophy);
 

@@ -57,7 +57,7 @@ export class Game {
         console.debug(`\n=====================================\n| Turn ${this.turn}: Player ${this.selectedPlayer}, it's your turn! |\n=====================================`);
 
         // Rajouter une question pour savoir ce que le joueur veut voir (main, plateau etc..)
-        this.gameboard.players[this.selectedPlayer-1].promptHand();
+        this.gameboard.players[this.selectedPlayer-1].showHand();
 
         let choice = await prompt('Pick a Card or Play a Card (1/2)? ');
         switch (choice) {
@@ -200,7 +200,7 @@ export class Game {
     private computeScore(): Map<number, number> {
         let score = new Map;
         let maxDirt:number, maxRat:number = 0;
-        let ownerDirt:number, ownerRat:number = null;
+        let ownerDirt:number, ownerRat:number = 0;
 
         for (let i=0; i<4; i++) {
             let s:number, dirt:number, rat:number = 0;
@@ -221,16 +221,17 @@ export class Game {
         }
         // Mon Dieu que c'est horrible :(
         // On verra plus tard pour l'extensibilitée
-        if (this.gameboard.trophy[0].name == 'Employee_of_the_month') { 
-            this.gameboard.players[ownerDirt].trophy.push(this.gameboard.trophy[0]); 
-            this.gameboard.players[ownerRat].trophy.push(this.gameboard.trophy[1]); }
+        if (this.gameboard.trophy[0].name == 'Employee_of_the_month') {
+            this.gameboard.players[ownerDirt].playerTrophy.addCard(this.gameboard.trophy[0]);
+            this.gameboard.players[ownerRat].playerTrophy.addCard(this.gameboard.trophy[1]); 
+        }
         else { 
-            this.gameboard.players[ownerDirt].trophy.push(this.gameboard.trophy[1]);
-            this.gameboard.players[ownerRat].trophy.push(this.gameboard.trophy[0]);
+            this.gameboard.players[ownerDirt].playerTrophy.addCard(this.gameboard.trophy[1]);
+            this.gameboard.players[ownerRat].playerTrophy.addCard(this.gameboard.trophy[0]);
         }
 
         for (let i=0; i<4; i++) {
-            for (let card of this.gameboard.players[i].trophy) {
+            for (let card of this.gameboard.players[i].playerTrophy.collection) {
                 let n = score.get(i);
                 n += (card as Treasure).gold_value;
                 score.set(i, n);
