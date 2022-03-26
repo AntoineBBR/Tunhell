@@ -37,8 +37,9 @@ export class Game {
         this.picker = new Picker();
     }
 
-    public playGame() : void {
-        this.doRound();     // Boucle de jeu
+    public async playGame() {
+        await this.doRound();     // Boucle de jeu
+        if (debugValue) { console.log('The game has ended.'); }
         let scores =  this.computeScore();
         this.endGame(scores);
 
