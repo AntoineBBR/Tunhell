@@ -5,7 +5,7 @@ import { StackType } from "../Card/StackType";
 export class Player {
     public playerHand : Stack;
     public mines : Array<Stack> = [];
-    public trophy : Array<Card> = [];
+    public playerTrophy : Stack;
     public treasure : Stack;
 
     public constructor(playerHand: Stack, nbPlayers: Number) {
@@ -14,6 +14,7 @@ export class Player {
             this.mines[i] = new Stack("PlayerMine" + i, StackType.PlayerMine);
         }
         this.treasure = new Stack("PlayerTreasure", StackType.PlayerTreasure);
+        this.playerTrophy = new Stack("PlayerTrophy", StackType.PlayerTrophy);
     }
 
     public moveCardToMine(noCard:number, noMine:number) : void {
@@ -23,7 +24,7 @@ export class Player {
         this.playerHand.moveCardToStack(this.playerHand.collection[noCard],this.mines[noMine]);
     }
 
-    public promptHand() : void {
+    public showHand() : void {
         console.log("Your hand:\n" + this.playerHand.toString() + "\n");
     }
 }
