@@ -2,7 +2,7 @@ import { GameBoard } from "../../Game/GameBoard";
 
 import { Card } from "../../Card/Card";
 import { Dwarf } from "../../Card/Dwarf";
-
+    
 import { debugValue } from "../../Launcher";
 
 import { prompt } from "../../Module/Question";
@@ -24,7 +24,6 @@ export class SpecialCard {
             let noCard = await prompt(`Wich card do you want to peak? (1 to ${array.length}) `);
             while (noCard <= 0 || noCard > array.length) {
                 noCard = await prompt(`Wich card do you want to peak? (1 to ${array.length}) `);
-                break;
             }
             console.log(`You choose to sacrifice the ${array[noCard-1].name}`);
             gameboard.recruitCenter.addCard(array[noCard-1]);
@@ -60,7 +59,6 @@ export class SpecialCard {
                 let noCard = await prompt(`Wich card do you want to peak? (1 to ${array.length}) `);
                 while (noCard <= 0 || noCard > array.length) {
                     noCard = await prompt(`Wich card do you want to peak? (1 to ${array.length}) `);
-                    break;
                 }
                 console.log(`You choose to sacrifice the ${array[noCard-1].name}`);
                 gameboard.recruitCenter.addCard(array[noCard-1]);
@@ -115,6 +113,5 @@ export class SpecialCard {
         }
         console.log(`But, you won the ${card.name}?!`);
         gameboard.players[player].playerHand.addCard(card);
-
     }
 }
