@@ -2,32 +2,28 @@ import { GameBoard } from "./GameBoard";
 import { Player } from "./Player";
 
 import { Card } from "../Card/Card";
+import { Enemy } from "../Card/Enemy";
+import { Treasure } from "../Card/Treasure";
 
 import { Blaster } from "../Action/Blaster";
-import { Dwarf } from "../Card/Dwarf";
 import { Picker } from "../Action/Picker";
 import { Scout } from "../Action/Scout";
-
-import { Enemy } from "../Card/Enemy";
-import { Bonus } from "../Card/Bonus";
-import { Treasure } from "../Card/Treasure";
 
 import { debugValue } from "../Launcher";
 import { debugExtremeValue } from "../Launcher";
 
 import { prompt } from "../Module/Question";
 
-
 export class Game {
-    public gameboard : GameBoard;
-    public selectedPlayer : number;
-    public turn : number;
+    public gameboard:GameBoard;
+    public selectedPlayer:number;
+    public turn:number;
 
-    private scout: Scout;
-    private blaster: Blaster;
-    private picker: Picker;
+    private scout:Scout;
+    private blaster:Blaster;
+    private picker:Picker;
 
-    public constructor(gameboard: GameBoard){
+    public constructor(gameboard:GameBoard){
         this.gameboard = gameboard;
         this.selectedPlayer = 1;
         this.turn = 1;
@@ -139,7 +135,7 @@ export class Game {
         }
     }
 
-    private async moveCardtoMine(player: Player, noCard: number) {
+    private async moveCardtoMine(player:Player, noCard:number) {
         let noMines = await prompt(`In which mine do you want to place the card ${player.playerHand.collection[noCard].name} (1 to ${this.gameboard.mines.length})? `);
         if (noMines > 0 && noMines <= this.gameboard.mines.length) {
             let card = player.playerHand.collection[noCard];
@@ -158,8 +154,8 @@ export class Game {
         }
     }
 
-    private isPossible(player: number, noMine: number) : boolean {
-        let combatValuePlayer: number = this.picker.combatValue(player, noMine, this.gameboard);
+    private isPossible(idPlayer:number, noMine:number) : boolean {
+        let combatValuePlayer:number = this.picker.combatValue(idPlayer, noMine, this.gameboard);
         for (let i=0; i < this.gameboard.nbPlayers; i++) {
             if (combatValuePlayer < this.picker.combatValue(i, noMine, this.gameboard)) {
                 return false;
@@ -216,7 +212,7 @@ export class Game {
             if (maxRat < rat) { maxRat = rat; ownerRat = i; }
 
             for (let card of this.gameboard.players[i].playerHand.collection) {
-                if (card.name == 'Unique_rings') { s += (card as Treasure).gold_value; }    // Rajouter les execptions
+                if (card.name == 'Unique_rings') { s += (card as Treasure).gold_value; }    // Rajouter les execptions si nécessaire
             }
             score.set(i, s);
         }
